@@ -1,22 +1,23 @@
 <?php
+
 namespace App\Models;
- 
+
 class Usuario
 {
     private \PDO $connection;
- 
+
     public ?int $id = null;
     public string $nome = '';
     public string $login = '';
     public string $senha = '';
     public string $email = '';
     public string $foto_path = '';
- 
+
     public function __construct(\PDO $connection)
     {
         $this->connection = $connection;
     }
- 
+
     public function createUser(): bool
     {
         $sql = "INSERT INTO usuario (nome, login, senha, email, foto_path)
@@ -30,22 +31,27 @@ class Usuario
             ':foto_path' => $this->foto_path
         ]);
     }
- 
+
     public function getByUserId(int $id): ?array
     {
         $sql = "SELECT * FROM usuario WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([':id' => $id]);
         $resultado = $stmt->fetch();
-        if($resultado) {
-         unset($resultado['senha']);
-         return $resultado;
+        if ($resultado) {
+            unset($resultado['senha']);
+            return $resultado;
         }
- 
- 
         return [];
     }
- 
+
+    public function getAllUser(): array
+    {
+        $sql = "SELECT * FROM usuario";
+        $stmt = $this->connection->query($sql);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function update(): bool
     {
         $sql = "UPDATE usuario SET
@@ -55,7 +61,7 @@ class Usuario
                     email = :email,
                     foto_path = :foto_path
                 WHERE id = :id";
-       
+
         $stmt = $this->connection->prepare($sql);
         return $stmt->execute([
             ':id' => $this->id,
@@ -66,7 +72,7 @@ class Usuario
             ':foto_path' => $this->foto_path
         ]);
     }
- 
+
     public function deleteUser(int $id): bool
     {
         $sql = "DELETE FROM usuario WHERE id = :id";

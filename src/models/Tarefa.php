@@ -36,6 +36,15 @@ class Tarefa
         $stmt->execute([':id' => $id]);
         return $stmt->fetch();    
     }
+
+    public function getAllTarefa() : array
+    {
+        $sql = "SELECT * FROM tarefa";
+        $stmt = $this->connection->query($sql);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        //AQUI TA DANDO ERRADO EU ACHO
+    }
  
     public function update(): bool
     {
